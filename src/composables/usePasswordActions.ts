@@ -31,7 +31,7 @@ export function usePasswordActions() {
 		toast.add({
 			severity: 'info',
 			summary: 'Успешно',
-			detail: 'Пароль успешно обновлён',
+			detail: 'Данные успешно обновлены',
 			life: 3000,
 		})
 	}

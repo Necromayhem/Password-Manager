@@ -14,9 +14,8 @@ const props = defineProps<{
 
 const emit = defineEmits(['submit', 'cancel'])
 
-const { formData, resetForm, preparePasswordData } = usePasswordForm(
-	props.editingData
-)
+const { formData, hasChanges, resetForm, preparePasswordData } =
+	usePasswordForm(props.editingData)
 
 const isEditing = computed(
 	() => props.editingData !== null && props.editingData !== undefined
@@ -86,6 +85,7 @@ function handleCancel() {
 				class="form-button"
 				:label="isEditing ? 'Update' : 'Add Password'"
 				@click="handleSubmit"
+				:disabled="isEditing && !hasChanges"
 			/>
 			<Button
 				v-if="isEditing"
