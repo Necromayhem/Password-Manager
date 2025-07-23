@@ -1,5 +1,5 @@
 import { ref, watchEffect, computed } from 'vue'
-import type { PasswordEntry, Tag } from '@/types/password'
+import type { PasswordEntry, PasswordFormEmits } from '@/types/password'
 
 export function usePasswordForm(initialData?: PasswordEntry | null) {
 	const formData = ref({
@@ -68,10 +68,35 @@ export function usePasswordForm(initialData?: PasswordEntry | null) {
 		}
 	}
 
+	const submitPasswordForm = (emit: PasswordFormEmits, toast: any) => {
+		if (
+			!formData.value.name ||
+			!formData.value.mail ||
+			!formData.value.password
+		) {
+			toast.add({
+				severity: 'error',
+				summary: 'Ошибка',
+				detail: 'Заполните все обязательные поля!',
+				life: 3000,
+			})
+			return
+		}
+		emit('submit', preparePasswordData())
+		resetForm()
+	}
+
+	const cancelPasswordForm = (emit: PasswordFormEmits) => {
+		resetForm()
+		emit('cancel')
+	}
+
 	return {
 		formData,
 		hasChanges,
 		resetForm,
 		preparePasswordData,
+		submitPasswordForm,
+		cancelPasswordForm,
 	}
 }

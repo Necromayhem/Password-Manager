@@ -8,3 +8,8 @@ export interface PasswordEntry {
 	password: string
 	tags?: Tag[]
 }
+
+export type PasswordFormEmits = {
+	(e: 'submit', data: PasswordEntry): void
+	(e: 'cancel'): void
+}

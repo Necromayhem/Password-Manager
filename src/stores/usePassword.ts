@@ -1,16 +1,6 @@
 import { ref } from 'vue'
 import { defineStore } from 'pinia'
-
-export interface Tag {
-	text: string
-}
-
-export interface PasswordEntry {
-	name: string
-	mail: string
-	password: string
-	tags?: Tag[]
-}
+import type { PasswordEntry } from '@/types/password'
 
 export const usePasswordStore = defineStore('password', () => {
 	const passwords = ref<PasswordEntry[]>([])

@@ -1,49 +1,22 @@
 <script setup lang="ts">
-import Button from 'primevue/button'
-import InputText from 'primevue/inputtext'
 import { computed } from 'vue'
 import { usePasswordForm } from '@/composables/usePasswordForm'
 import type { PasswordEntry } from '@/types/password'
-import { useToast } from 'primevue/usetoast'
+import { useToast, InputText, Button } from '../components/primevue'
 
 const toast = useToast()
-
 const props = defineProps<{
 	editingData?: PasswordEntry | null
 }>()
 
 const emit = defineEmits(['submit', 'cancel'])
 
-const { formData, hasChanges, resetForm, preparePasswordData } =
+const { formData, hasChanges, submitPasswordForm, cancelPasswordForm } =
 	usePasswordForm(props.editingData)
 
 const isEditing = computed(
 	() => props.editingData !== null && props.editingData !== undefined
 )
-
-function handleSubmit() {
-	if (
-		!formData.value.name ||
-		!formData.value.mail ||
-		!formData.value.password
-	) {
-		toast.add({
-			severity: 'error',
-			summary: 'Ошибка',
-			detail: 'Заполните все обязательные поля!',
-			life: 3000,
-		})
-		return
-	}
-
-	emit('submit', preparePasswordData())
-	resetForm()
-}
-
-function handleCancel() {
-	resetForm()
-	emit('cancel')
-}
 </script>
 
 <template>
@@ -84,7 +57,7 @@ function handleCancel() {
 			<Button
 				class="form-button"
 				:label="isEditing ? 'Update' : 'Add Password'"
-				@click="handleSubmit"
+				@click="submitPasswordForm(emit, toast)"
 				:disabled="isEditing && !hasChanges"
 			/>
 			<Button
@@ -92,7 +65,7 @@ function handleCancel() {
 				class="form-button"
 				label="Cancel"
 				severity="secondary"
-				@click="handleCancel"
+				@click="cancelPasswordForm(emit)"
 			/>
 		</div>
 	</div>
@@ -108,7 +81,6 @@ function handleCancel() {
 	padding: 15px;
 	border: 1px solid #ddd;
 	border-radius: 5px;
-	background: white;
 	position: fixed;
 	top: 50%;
 	left: 50%;

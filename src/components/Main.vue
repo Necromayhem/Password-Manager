@@ -1,55 +1,32 @@
 <script setup lang="ts">
-import DataTable from 'primevue/datatable'
-import Column from 'primevue/column'
-import Button from 'primevue/button'
-import Chip from 'primevue/chip'
-import IconField from 'primevue/iconfield'
-import InputIcon from 'primevue/inputicon'
-import InputText from 'primevue/inputtext'
+import {
+	DataTable,
+	IconField,
+	Chip,
+	InputIcon,
+	InputText,
+	Button,
+	Column,
+} from '../components/primevue'
 import { ref } from 'vue'
+import { usePasswordManager } from '@/composables/usePasswordManager'
 import { usePasswordStore } from '@/stores/usePassword'
-import { usePasswordActions } from '@/composables/usePasswordActions'
 import Form from './Form.vue'
-import type { PasswordEntry } from '@/types/password'
 
 const searchQuery = ref('')
-const showForm = ref(false)
-const editingData = ref<PasswordEntry | null>(null)
-
 const passwordStore = usePasswordStore()
-const { addPassword, deletePassword, updatePassword } = usePasswordActions()
+const {
+	editingData,
+	showForm,
+	editPassword,
+	removePassword,
+	submitPassword: formSubmit,
+	cancelEdit,
+} = usePasswordManager()
 
-function handleEdit(index: number) {
-	editingData.value = passwordStore.passwords[index]
-	showForm.value = true
-}
-
-function handleDelete(index: number) {
-	deletePassword(index)
-}
-
-function handleAddPassword() {
+const addPassword = () => {
 	editingData.value = null
 	showForm.value = true
-}
-
-function handleCancelEdit() {
-	showForm.value = false
-	editingData.value = null
-}
-
-function handleFormSubmit(passwordData: PasswordEntry) {
-	if (editingData.value) {
-		const index = passwordStore.passwords.findIndex(
-			p => p === editingData.value
-		)
-		if (index !== -1) {
-			updatePassword(index, passwordData)
-		}
-	} else {
-		addPassword(passwordData)
-	}
-	showForm.value = false
 }
 </script>
 
@@ -61,7 +38,7 @@ function handleFormSubmit(passwordData: PasswordEntry) {
 				class="top-button"
 				icon="pi pi-plus"
 				label="Add Password"
-				@click="handleAddPassword"
+				@click="addPassword"
 			/>
 		</div>
 		<div class="search">
@@ -99,12 +76,12 @@ function handleFormSubmit(passwordData: PasswordEntry) {
 						<Button
 							icon="pi pi-pencil"
 							class="p-button-rounded p-button-text"
-							@click="handleEdit(index)"
+							@click="editPassword(index)"
 						/>
 						<Button
 							icon="pi pi-trash"
 							class="p-button-rounded p-button-text p-button-danger"
-							@click="handleDelete(index)"
+							@click="removePassword(index)"
 						/>
 					</div>
 				</template>
@@ -113,11 +90,11 @@ function handleFormSubmit(passwordData: PasswordEntry) {
 	</div>
 
 	<teleport to="body">
-		<div v-if="showForm" class="modal-overlay" @click.self="handleCancelEdit">
+		<div v-if="showForm" class="modal-overlay" @click.self="cancelEdit">
 			<Form
 				:editingData="editingData"
-				@submit="handleFormSubmit"
-				@cancel="handleCancelEdit"
+				@submit="formSubmit"
+				@cancel="cancelEdit"
 			/>
 		</div>
 	</teleport>
