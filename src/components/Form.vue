@@ -4,6 +4,9 @@ import InputText from 'primevue/inputtext'
 import { computed } from 'vue'
 import { usePasswordForm } from '@/composables/usePasswordForm'
 import type { PasswordEntry } from '@/types/password'
+import { useToast } from 'primevue/usetoast'
+
+const toast = useToast()
 
 const props = defineProps<{
 	editingData?: PasswordEntry | null
@@ -25,7 +28,12 @@ function handleSubmit() {
 		!formData.value.mail ||
 		!formData.value.password
 	) {
-		alert('Заполните все поля!')
+		toast.add({
+			severity: 'error',
+			summary: 'Ошибка',
+			detail: 'Заполните все обязательные поля!',
+			life: 3000,
+		})
 		return
 	}
 
