@@ -91,6 +91,8 @@ export function usePasswordForm(initialData?: PasswordEntry | null) {
 		emit('cancel')
 	}
 
+	const showPassword = ref(false)
+
 	return {
 		formData,
 		hasChanges,
@@ -98,5 +100,6 @@ export function usePasswordForm(initialData?: PasswordEntry | null) {
 		preparePasswordData,
 		submitPasswordForm,
 		cancelPasswordForm,
+		showPassword,
 	}
 }

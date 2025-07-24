@@ -4,7 +4,6 @@ import { usePasswordForm } from '@/composables/usePasswordForm'
 import type { PasswordEntry } from '@/types/password'
 import { useToast, InputText, Button, Password } from '../components/primevue'
 
-const showPassword = ref(false)
 const toast = useToast()
 const props = defineProps<{
 	editingData?: PasswordEntry | null
@@ -12,8 +11,13 @@ const props = defineProps<{
 
 const emit = defineEmits(['submit', 'cancel'])
 
-const { formData, hasChanges, submitPasswordForm, cancelPasswordForm } =
-	usePasswordForm(props.editingData)
+const {
+	formData,
+	hasChanges,
+	submitPasswordForm,
+	cancelPasswordForm,
+	showPassword,
+} = usePasswordForm(props.editingData)
 
 const isEditing = computed(
 	() => props.editingData !== null && props.editingData !== undefined

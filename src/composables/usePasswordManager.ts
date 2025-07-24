@@ -35,6 +35,12 @@ export function usePasswordManager() {
 		editingData.value = null
 	}
 
+	const showPasswords = ref<Record<number, boolean>>({})
+
+	const togglePasswordVisibility = (index: number) => {
+		showPasswords.value[index] = !showPasswords.value[index]
+	}
+
 	return {
 		editingData,
 		showForm,
@@ -42,5 +48,7 @@ export function usePasswordManager() {
 		removePassword,
 		submitPassword,
 		cancelEdit,
+		showPasswords,
+		togglePasswordVisibility,
 	}
 }

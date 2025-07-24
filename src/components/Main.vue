@@ -13,12 +13,6 @@ import { usePasswordManager } from '@/composables/usePasswordManager'
 import { usePasswordStore } from '@/stores/usePassword'
 import Form from './Form.vue'
 
-const showPasswords = ref<Record<number, boolean>>({})
-
-const togglePasswordVisibility = (index: number) => {
-	showPasswords.value[index] = !showPasswords.value[index]
-}
-
 const searchQuery = ref('')
 const passwordStore = usePasswordStore()
 const {
@@ -28,6 +22,8 @@ const {
 	removePassword,
 	submitPassword: formSubmit,
 	cancelEdit,
+	showPasswords,
+	togglePasswordVisibility,
 } = usePasswordManager()
 
 const addPassword = () => {
