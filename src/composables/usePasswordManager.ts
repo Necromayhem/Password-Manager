@@ -9,13 +9,32 @@ export function usePasswordManager() {
 	const editingData = ref<PasswordEntry | null>(null)
 	const showForm = ref(false)
 
+	const isDeleteDialogVisible = ref(false)
+	const deleteIndex = ref<number>(-1)
+
 	const editPassword = (index: number) => {
-		editingData.value = passwordStore.passwords[index]
-		showForm.value = true
+		if (index >= 0 && index < passwordStore.passwords.length) {
+			editingData.value = passwordStore.passwords[index]
+			showForm.value = true
+		}
 	}
 
 	const removePassword = (index: number) => {
-		deletePassword(index)
+		if (index >= 0 && index < passwordStore.passwords.length) {
+			deleteIndex.value = index
+			isDeleteDialogVisible.value = true
+		}
+	}
+
+	const confirmDelete = () => {
+		if (
+			deleteIndex.value >= 0 &&
+			deleteIndex.value < passwordStore.passwords.length
+		) {
+			deletePassword(deleteIndex.value)
+		}
+		isDeleteDialogVisible.value = false
+		deleteIndex.value = -1
 	}
 
 	const submitPassword = (passwordData: PasswordEntry) => {
@@ -50,5 +69,8 @@ export function usePasswordManager() {
 		cancelEdit,
 		showPasswords,
 		togglePasswordVisibility,
+		confirmDelete,
+		deleteIndex,
+		isDeleteDialogVisible,
 	}
 }

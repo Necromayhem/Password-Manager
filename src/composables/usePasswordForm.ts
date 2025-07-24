@@ -1,7 +1,15 @@
-import { ref, watchEffect, computed } from 'vue'
+import { ref, watchEffect, computed, onMounted } from 'vue'
 import type { PasswordEntry, PasswordFormEmits } from '@/types/password'
+import { useFormSession } from '@/services/form-session.service'
 
 export function usePasswordForm(initialData?: PasswordEntry | null) {
+	const {
+		sessionFormData,
+		saveFormSession,
+		loadFormSession,
+		clearFormSession,
+	} = useFormSession()
+
 	const formData = ref({
 		name: '',
 		mail: '',
@@ -10,6 +18,18 @@ export function usePasswordForm(initialData?: PasswordEntry | null) {
 	})
 
 	const originalData = ref<PasswordEntry | null>(null)
+
+	onMounted(() => {
+		const sessionData = loadFormSession()
+		if (sessionData) {
+			formData.value = {
+				name: sessionData.name || '',
+				mail: sessionData.mail || '',
+				password: sessionData.password || '',
+				tags: sessionData.tags?.map(tag => tag.text).join('; ') || '',
+			}
+		}
+	})
 
 	watchEffect(() => {
 		if (initialData) {
@@ -22,6 +42,26 @@ export function usePasswordForm(initialData?: PasswordEntry | null) {
 			}
 		} else {
 			originalData.value = null
+		}
+	})
+
+	watchEffect(() => {
+		if (
+			formData.value.name ||
+			formData.value.mail ||
+			formData.value.password ||
+			formData.value.tags
+		) {
+			saveFormSession({
+				name: formData.value.name,
+				mail: formData.value.mail,
+				password: formData.value.password,
+				tags: formData.value.tags
+					.split(';')
+					.map(tag => tag.trim())
+					.filter(tag => tag.length > 0)
+					.map(text => ({ text })),
+			})
 		}
 	})
 
@@ -51,6 +91,7 @@ export function usePasswordForm(initialData?: PasswordEntry | null) {
 			tags: '',
 		}
 		originalData.value = null
+		clearFormSession()
 	}
 
 	const preparePasswordData = (): PasswordEntry => {

@@ -7,6 +7,7 @@ import {
 	InputText,
 	Button,
 	Column,
+	Dialog,
 } from '../components/primevue'
 import { ref } from 'vue'
 import { usePasswordManager } from '@/composables/usePasswordManager'
@@ -24,6 +25,9 @@ const {
 	cancelEdit,
 	showPasswords,
 	togglePasswordVisibility,
+	confirmDelete,
+	deleteIndex,
+	isDeleteDialogVisible,
 } = usePasswordManager()
 
 const addPassword = () => {
@@ -43,6 +47,43 @@ const addPassword = () => {
 				@click="addPassword"
 			/>
 		</div>
+		<teleport to="body">
+			<Dialog
+				v-model:visible="isDeleteDialogVisible"
+				header="Confirm Delete"
+				:style="{ width: '350px' }"
+				:modal="true"
+			>
+				<div class="confirmation-content">
+					<span>Are you sure you want to delete the data?</span>
+				</div>
+				<template #footer>
+					<Button
+						label="No"
+						icon="pi pi-times"
+						@click="isDeleteDialogVisible = false"
+						class="p-button-text"
+					/>
+					<Button
+						label="Yes"
+						icon="pi pi-check"
+						@click="confirmDelete"
+						class="p-button-danger"
+						autofocus
+					/>
+				</template>
+			</Dialog>
+		</teleport>
+
+		<teleport to="body">
+			<div v-if="showForm" class="modal-overlay" @click.self="cancelEdit">
+				<Form
+					:editingData="editingData"
+					@submit="formSubmit"
+					@cancel="cancelEdit"
+				/>
+			</div>
+		</teleport>
 		<div v-if="passwordStore.passwords.length > 0" class="search">
 			<IconField>
 				<InputIcon class="pi pi-search" />
@@ -289,5 +330,10 @@ const addPassword = () => {
 .password-cell button {
 	padding: 0.25rem;
 	margin-left: 0.5rem;
+}
+.confirmation-content {
+	display: flex;
+	align-items: center;
+	justify-content: center;
 }
 </style>

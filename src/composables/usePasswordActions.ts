@@ -17,11 +17,12 @@ export function usePasswordActions() {
 	}
 
 	const deletePassword = (index: number) => {
+		const deletedItem = passwordStore.passwords[index]
 		passwordStore.deletePassword(index)
 		toast.add({
 			severity: 'warn',
-			summary: 'Успешно',
-			detail: 'Пароль успешно удалён',
+			summary: 'Удалено',
+			detail: `Пароль для ${deletedItem.name} удалён`,
 			life: 3000,
 		})
 	}
@@ -30,7 +31,7 @@ export function usePasswordActions() {
 		passwordStore.updatePassword(index, updatedPassword)
 		toast.add({
 			severity: 'info',
-			summary: 'Успешно',
+			summary: 'Обновлено',
 			detail: 'Данные успешно обновлены',
 			life: 3000,
 		})
