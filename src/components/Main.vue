@@ -1,120 +1,121 @@
-	<script setup lang="ts">
-	import {
-		DataTable,
-		IconField,
-		Chip,
-		InputIcon,
-		InputText,
-		Button,
-		Column,
-	} from '../components/primevue';
-	import { ref } from 'vue';
-	import { usePasswordManager } from '@/composables/usePasswordManager';
-	import { usePasswordStore } from '@/stores/usePassword';
-	import Form from './Form.vue';
+<script setup lang="ts">
+import {
+	DataTable,
+	IconField,
+	Chip,
+	InputIcon,
+	InputText,
+	Button,
+	Column,
+} from '../components/primevue'
+import { ref } from 'vue'
+import { usePasswordManager } from '@/composables/usePasswordManager'
+import { usePasswordStore } from '@/stores/usePassword'
+import Form from './Form.vue'
 
-	const showPasswords = ref<Record<number, boolean>>({});
+const showPasswords = ref<Record<number, boolean>>({})
 
-	const togglePasswordVisibility = (index: number) => {
-		showPasswords.value[index] = !showPasswords.value[index];
-	};
+const togglePasswordVisibility = (index: number) => {
+	showPasswords.value[index] = !showPasswords.value[index]
+}
 
-	const searchQuery = ref('');
-	const passwordStore = usePasswordStore();
-	const {
-		editingData,
-		showForm,
-		editPassword,
-		removePassword,
-		submitPassword: formSubmit,
-		cancelEdit,
-	} = usePasswordManager();
+const searchQuery = ref('')
+const passwordStore = usePasswordStore()
+const {
+	editingData,
+	showForm,
+	editPassword,
+	removePassword,
+	submitPassword: formSubmit,
+	cancelEdit,
+} = usePasswordManager()
 
-	const addPassword = () => {
-		editingData.value = null;
-		showForm.value = true;
-	};
-	</script>
+const addPassword = () => {
+	editingData.value = null
+	showForm.value = true
+}
+</script>
 
-	<template>
-		<div class="top">
-			<div class="title">
-				Password Manager
-				<Button
-					class="top-button"
-					icon="pi pi-plus"
-					label="Add Password"
-					@click="addPassword"
-				/>
-			</div>
-			<div class="search">
-				<IconField>
-					<InputIcon class="pi pi-search" />
-					<InputText v-model="searchQuery" placeholder="Search..." size="small" />
-				</IconField>
-			</div>
+<template>
+	<div class="top">
+		<div class="title">
+			Password Manager
+			<Button
+				class="top-button"
+				icon="pi pi-plus"
+				label="Add Password"
+				@click="addPassword"
+			/>
 		</div>
-		<div v-if="passwordStore.passwords.length > 0" class="table-container">
-			<DataTable :value="passwordStore.passwords">
-				<Column field="name" header="Name">
-					<template #body="{ data }">
-						{{ data.name }}
-					</template>
-				</Column>
-				<Column field="mail" header="Mail">
-					<template #body="{ data }">
-						{{ data.mail }}
-					</template>
-				</Column>
-				<Column field="password" header="Password">
+		<div class="search">
+			<IconField>
+				<InputIcon class="pi pi-search" />
+				<InputText v-model="searchQuery" placeholder="Search..." size="small" />
+			</IconField>
+		</div>
+	</div>
+	<div v-if="passwordStore.passwords.length > 0" class="table-container">
+		<DataTable :value="passwordStore.passwords">
+			<Column field="name" header="Name">
+				<template #body="{ data }">
+					{{ data.name }}
+				</template>
+			</Column>
+			<Column field="mail" header="Mail">
+				<template #body="{ data }">
+					{{ data.mail }}
+				</template>
+			</Column>
 			<Column field="password" header="Password">
-			<template #body="{ data }">
-				<span v-if="showPasswords[index]">{{ data.password }}</span>
-				<span v-else>••••••••</span>
-			</template>
-		</Column>
-				<Column field="tags" header="Tags">
-					<template #body="{ data }">
-						<div class="flex gap-2">
-							<Chip v-for="tag in data.tags" :key="tag.text" :label="tag.text" />
-						</div>
-					</template>
-				</Column>
-					<Column field="actions" header="Actions">
-			<template #body="{ index }">
-				<div class="actions">
-					<Button
-						v-tooltip="showPasswords[index] ? 'Hide password' : 'Show password'"
-						icon="pi pi-eye"
-						class="p-button-rounded p-button-text"
-						@click="togglePasswordVisibility(index)"
-					/>
-					<Button
-						icon="pi pi-pencil"
-						class="p-button-rounded p-button-text"
-						@click="editPassword(index)"
-					/>
-					<Button
-						icon="pi pi-trash"
-						class="p-button-rounded p-button-text p-button-danger"
-						@click="removePassword(index)"
-					/>
-				</div>
-			</template>
-		</Column>
-			</DataTable>
-		</div>
+				<template #body="{ data, index }">
+					<span v-if="showPasswords[index]">{{ data.password }}</span>
+					<span v-else>••••••••</span>
+				</template>
+			</Column>
+			<Column field="tags" header="Tags">
+				<template #body="{ data }">
+					<div class="flex gap-2">
+						<Chip v-for="tag in data.tags" :key="tag.text" :label="tag.text" />
+					</div>
+				</template>
+			</Column>
+			<Column field="actions" header="Actions">
+				<template #body="{ index }">
+					<div class="actions">
+						<Button
+							v-tooltip="
+								showPasswords[index] ? 'Hide password' : 'Show password'
+							"
+							icon="pi pi-eye"
+							class="p-button-rounded p-button-text"
+							@click="togglePasswordVisibility(index)"
+						/>
+						<Button
+							icon="pi pi-pencil"
+							class="p-button-rounded p-button-text"
+							@click="editPassword(index)"
+						/>
+						<Button
+							icon="pi pi-trash"
+							class="p-button-rounded p-button-text p-button-danger"
+							@click="removePassword(index)"
+						/>
+					</div>
+				</template>
+			</Column>
+		</DataTable>
+	</div>
 
-		<teleport to="body">
-			<div v-if="showForm" class="modal-overlay" @click.self="cancelEdit">
-				<Form
-					:editingData="editingData"
-					@submit="formSubmit"
-					@cancel="cancelEdit"
-				/>
-			</div>
-		</teleport>
-	</template>
+	<teleport to="body">
+		<div v-if="showForm" class="modal-overlay" @click.self="cancelEdit">
+			<Form
+				:editingData="editingData"
+				@submit="formSubmit"
+				@cancel="cancelEdit"
+			/>
+		</div>
+	</teleport>
+</template>
 
 <style scoped>
 .top {
