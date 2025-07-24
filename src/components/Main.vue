@@ -43,7 +43,7 @@ const addPassword = () => {
 				@click="addPassword"
 			/>
 		</div>
-		<div class="search">
+		<div v-if="passwordStore.passwords.length > 0" class="search">
 			<IconField>
 				<InputIcon class="pi pi-search" />
 				<InputText v-model="searchQuery" placeholder="Search..." size="small" />

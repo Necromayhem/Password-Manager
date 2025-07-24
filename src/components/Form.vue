@@ -1,8 +1,9 @@
 <script setup lang="ts">
 import { computed, ref } from 'vue'
 import { usePasswordForm } from '@/composables/usePasswordForm'
+import { useGeneratePassword } from '../utils/useGeneratePassword.ts'
 import type { PasswordEntry } from '@/types/password'
-import { useToast, InputText, Button, Password } from '../components/primevue'
+import { useToast, InputText, Button } from '../components/primevue'
 
 const toast = useToast()
 const props = defineProps<{
@@ -19,9 +20,15 @@ const {
 	showPassword,
 } = usePasswordForm(props.editingData)
 
+const { generateRandomPassword } = useGeneratePassword()
+
 const isEditing = computed(
 	() => props.editingData !== null && props.editingData !== undefined
 )
+
+const generatePassword = () => {
+	formData.value.password = generateRandomPassword()
+}
 </script>
 
 <template>
@@ -50,6 +57,14 @@ const isEditing = computed(
 					v-model="formData.password"
 					:type="showPassword ? 'text' : 'password'"
 					placeholder="Password"
+				/>
+				<Button
+					class="generate-button"
+					icon="pi pi-sync"
+					@click="generatePassword"
+					text
+					severity="secondary"
+					v-tooltip="'Generate password'"
 				/>
 				<Button
 					class="eye-button"
@@ -106,13 +121,11 @@ const isEditing = computed(
 	margin-bottom: 10px;
 	width: 100%;
 }
-.input-text {
-	width: 250px;
-}
+
 .form-actions {
 	display: flex;
 	flex-direction: column;
-	width: 250px;
+	width: 100%;
 	gap: 10px;
 }
 .form-button {
@@ -126,12 +139,22 @@ const isEditing = computed(
 
 .input-text {
 	width: 100%;
-	padding-right: 35px;
+	padding-right: 70px; /* Увеличиваем отступ для двух кнопок */
 }
 
 .eye-button {
 	position: absolute;
 	right: 0;
+	top: 50%;
+	transform: translateY(-50%);
+	width: 32px;
+	height: 32px;
+	cursor: pointer;
+}
+
+.generate-button {
+	position: absolute;
+	right: 32px; /* Располагаем слева от eye-button */
 	top: 50%;
 	transform: translateY(-50%);
 	width: 32px;
