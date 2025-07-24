@@ -18,6 +18,7 @@ const {
 	submitPasswordForm,
 	cancelPasswordForm,
 	showPassword,
+	errorFields,
 } = usePasswordForm(props.editingData)
 
 const { generateRandomPassword } = useGeneratePassword()
@@ -41,6 +42,7 @@ const generatePassword = () => {
 				class="input-text"
 				v-model="formData.name"
 				placeholder="Name"
+				:class="{ 'p-invalid': errorFields.name }"
 			/>
 		</div>
 		<div class="form-row">
@@ -48,6 +50,7 @@ const generatePassword = () => {
 				class="input-text"
 				v-model="formData.mail"
 				placeholder="Mail"
+				:class="{ 'p-invalid': errorFields.mail }"
 			/>
 		</div>
 		<div class="form-row">
@@ -57,6 +60,7 @@ const generatePassword = () => {
 					v-model="formData.password"
 					:type="showPassword ? 'text' : 'password'"
 					placeholder="Password"
+					:class="{ 'p-invalid': errorFields.password }"
 				/>
 				<Button
 					class="generate-button"
@@ -78,7 +82,7 @@ const generatePassword = () => {
 			<InputText
 				class="input-text"
 				v-model="formData.tags"
-				placeholder="Tags (separated by semicolon)"
+				placeholder="Tags"
 			/>
 		</div>
 		<div class="form-actions">

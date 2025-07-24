@@ -109,20 +109,45 @@ export function usePasswordForm(initialData?: PasswordEntry | null) {
 		}
 	}
 
+	const errorFields = ref({
+		name: false,
+		mail: false,
+		password: false,
+	})
+
+	const clearErrors = () => {
+		errorFields.value = {
+			name: false,
+			mail: false,
+			password: false,
+		}
+	}
+
 	const submitPasswordForm = (emit: PasswordFormEmits, toast: any) => {
-		if (
-			!formData.value.name ||
-			!formData.value.mail ||
-			!formData.value.password
-		) {
+		clearErrors()
+
+		let hasError = false
+		const newErrorFields = {
+			name: !formData.value.name,
+			mail: !formData.value.mail,
+			password: !formData.value.password,
+		}
+
+		if (newErrorFields.name || newErrorFields.mail || newErrorFields.password) {
+			errorFields.value = newErrorFields
+			hasError = true
+
 			toast.add({
 				severity: 'error',
 				summary: 'Ошибка',
 				detail: 'Заполните все обязательные поля!',
 				life: 3000,
 			})
+
+			setTimeout(clearErrors, 3000)
 			return
 		}
+
 		emit('submit', preparePasswordData())
 		resetForm()
 	}
@@ -142,5 +167,6 @@ export function usePasswordForm(initialData?: PasswordEntry | null) {
 		submitPasswordForm,
 		cancelPasswordForm,
 		showPassword,
+		errorFields,
 	}
 }
