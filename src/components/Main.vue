@@ -7,14 +7,14 @@ import {
 	InputText,
 	Button,
 	Column,
-} from '../components/primevue'
-import { ref } from 'vue'
-import { usePasswordManager } from '@/composables/usePasswordManager'
-import { usePasswordStore } from '@/stores/usePassword'
-import Form from './Form.vue'
+} from '../components/primevue';
+import { ref } from 'vue';
+import { usePasswordManager } from '@/composables/usePasswordManager';
+import { usePasswordStore } from '@/stores/usePassword';
+import Form from './Form.vue';
 
-const searchQuery = ref('')
-const passwordStore = usePasswordStore()
+const searchQuery = ref('');
+const passwordStore = usePasswordStore();
 const {
 	editingData,
 	showForm,
@@ -22,12 +22,12 @@ const {
 	removePassword,
 	submitPassword: formSubmit,
 	cancelEdit,
-} = usePasswordManager()
+} = usePasswordManager();
 
 const addPassword = () => {
-	editingData.value = null
-	showForm.value = true
-}
+	editingData.value = null;
+	showForm.value = true;
+};
 </script>
 
 <template>
@@ -48,7 +48,7 @@ const addPassword = () => {
 			</IconField>
 		</div>
 	</div>
-	<div class="table-container">
+	<div v-if="passwordStore.passwords.length > 0" class="table-container">
 		<DataTable :value="passwordStore.passwords">
 			<Column field="name" header="Name">
 				<template #body="{ data }">
