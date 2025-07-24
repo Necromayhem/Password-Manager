@@ -7,12 +7,12 @@ import {
 	InputText,
 	Button,
 	Column,
-	Dialog,
 } from '../components/primevue'
 import { ref } from 'vue'
 import { usePasswordManager } from '@/composables/usePasswordManager'
 import { usePasswordStore } from '@/stores/usePassword'
-import Form from './Form.vue'
+import DeleteConfirmationDialog from './DeleteConfirmationDialog.vue'
+import PasswordFormModal from './PasswordFormModal.vue'
 
 const searchQuery = ref('')
 const passwordStore = usePasswordStore()
@@ -26,7 +26,6 @@ const {
 	showPasswords,
 	togglePasswordVisibility,
 	confirmDelete,
-	deleteIndex,
 	isDeleteDialogVisible,
 } = usePasswordManager()
 
@@ -47,43 +46,19 @@ const addPassword = () => {
 				@click="addPassword"
 			/>
 		</div>
-		<teleport to="body">
-			<Dialog
-				v-model:visible="isDeleteDialogVisible"
-				header="Confirm Delete"
-				:style="{ width: '350px' }"
-				:modal="true"
-			>
-				<div class="confirmation-content">
-					<span>Are you sure you want to delete the data?</span>
-				</div>
-				<template #footer>
-					<Button
-						label="No"
-						icon="pi pi-times"
-						@click="isDeleteDialogVisible = false"
-						class="p-button-text"
-					/>
-					<Button
-						label="Yes"
-						icon="pi pi-check"
-						@click="confirmDelete"
-						class="p-button-danger"
-						autofocus
-					/>
-				</template>
-			</Dialog>
-		</teleport>
 
-		<teleport to="body">
-			<div v-if="showForm" class="modal-overlay" @click.self="cancelEdit">
-				<Form
-					:editingData="editingData"
-					@submit="formSubmit"
-					@cancel="cancelEdit"
-				/>
-			</div>
-		</teleport>
+		<DeleteConfirmationDialog
+			v-model="isDeleteDialogVisible"
+			@confirm="confirmDelete"
+		/>
+
+		<PasswordFormModal
+			v-model="showForm"
+			:editingData="editingData"
+			@submit="formSubmit"
+			@cancel="cancelEdit"
+		/>
+
 		<div v-if="passwordStore.passwords.length > 0" class="search">
 			<IconField>
 				<InputIcon class="pi pi-search" />
@@ -91,6 +66,7 @@ const addPassword = () => {
 			</IconField>
 		</div>
 	</div>
+
 	<div v-if="passwordStore.passwords.length > 0" class="table-container">
 		<DataTable :value="passwordStore.passwords">
 			<Column field="name" header="Name">
@@ -142,16 +118,6 @@ const addPassword = () => {
 			</Column>
 		</DataTable>
 	</div>
-
-	<teleport to="body">
-		<div v-if="showForm" class="modal-overlay" @click.self="cancelEdit">
-			<Form
-				:editingData="editingData"
-				@submit="formSubmit"
-				@cancel="cancelEdit"
-			/>
-		</div>
-	</teleport>
 </template>
 
 <style scoped>
@@ -192,19 +158,6 @@ const addPassword = () => {
 .actions {
 	display: flex;
 	gap: 0.5rem;
-}
-
-.modal-overlay {
-	position: fixed;
-	top: 0;
-	left: 0;
-	right: 0;
-	bottom: 0;
-	background-color: rgba(0, 0, 0, 0.5);
-	z-index: 999;
-	display: flex;
-	justify-content: center;
-	align-items: center;
 }
 
 :deep(.p-chip) {
@@ -330,10 +283,5 @@ const addPassword = () => {
 .password-cell button {
 	padding: 0.25rem;
 	margin-left: 0.5rem;
-}
-.confirmation-content {
-	display: flex;
-	align-items: center;
-	justify-content: center;
 }
 </style>

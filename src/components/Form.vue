@@ -107,13 +107,15 @@ const generatePassword = () => {
 	width: 300px;
 	margin: 20px auto;
 	padding: 15px;
-	border: 1px solid #ddd;
+	border: 1px solid var(--surface-border);
 	border-radius: 5px;
 	position: fixed;
-	top: 50%;
+	top: 40%;
 	left: 50%;
 	transform: translate(-50%, -50%);
 	z-index: 1000;
+	background: var(--surface-card);
+	box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
 }
 .form-row {
 	display: flex;
@@ -139,7 +141,7 @@ const generatePassword = () => {
 
 .input-text {
 	width: 100%;
-	padding-right: 70px; /* Увеличиваем отступ для двух кнопок */
+	padding-right: 70px;
 }
 
 .eye-button {
@@ -154,7 +156,7 @@ const generatePassword = () => {
 
 .generate-button {
 	position: absolute;
-	right: 32px; /* Располагаем слева от eye-button */
+	right: 32px;
 	top: 50%;
 	transform: translateY(-50%);
 	width: 32px;
