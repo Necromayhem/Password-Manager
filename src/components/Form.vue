@@ -2,7 +2,7 @@
 import { computed } from 'vue';
 import { usePasswordForm } from '@/composables/usePasswordForm';
 import type { PasswordEntry } from '@/types/password';
-import { useToast, InputText, Button } from '../components/primevue';
+import { useToast, InputText, Button, Password } from '../components/primevue';
 
 const toast = useToast();
 const props = defineProps<{
@@ -39,11 +39,12 @@ const isEditing = computed(
 			/>
 		</div>
 		<div class="form-row">
-			<InputText
+			<Password
 				class="input-text"
 				v-model="formData.password"
 				placeholder="Password"
-				type="password"
+				:feedback="false"
+				toggleMask
 			/>
 		</div>
 		<div class="form-row">
