@@ -1,22 +1,23 @@
 <script setup lang="ts">
-import { computed } from 'vue';
-import { usePasswordForm } from '@/composables/usePasswordForm';
-import type { PasswordEntry } from '@/types/password';
-import { useToast, InputText, Button, Password } from '../components/primevue';
+import { computed, ref } from 'vue'
+import { usePasswordForm } from '@/composables/usePasswordForm'
+import type { PasswordEntry } from '@/types/password'
+import { useToast, InputText, Button, Password } from '../components/primevue'
 
-const toast = useToast();
+const showPassword = ref(false)
+const toast = useToast()
 const props = defineProps<{
-	editingData?: PasswordEntry | null;
-}>();
+	editingData?: PasswordEntry | null
+}>()
 
-const emit = defineEmits(['submit', 'cancel']);
+const emit = defineEmits(['submit', 'cancel'])
 
 const { formData, hasChanges, submitPasswordForm, cancelPasswordForm } =
-	usePasswordForm(props.editingData);
+	usePasswordForm(props.editingData)
 
 const isEditing = computed(
 	() => props.editingData !== null && props.editingData !== undefined
-);
+)
 </script>
 
 <template>
@@ -39,13 +40,20 @@ const isEditing = computed(
 			/>
 		</div>
 		<div class="form-row">
-			<Password
-				class="input-text"
-				v-model="formData.password"
-				placeholder="Password"
-				:feedback="false"
-				toggleMask
-			/>
+			<div class="password-input-wrapper">
+				<InputText
+					class="input-text"
+					v-model="formData.password"
+					:type="showPassword ? 'text' : 'password'"
+					placeholder="Password"
+				/>
+				<Button
+					class="eye-button"
+					:icon="showPassword ? 'pi pi-eye-slash' : 'pi pi-eye'"
+					@click="showPassword = !showPassword"
+					text
+				/>
+			</div>
 		</div>
 		<div class="form-row">
 			<InputText
@@ -106,5 +114,24 @@ const isEditing = computed(
 .form-button {
 	width: 100%;
 	text-align: center;
+}
+.password-input-wrapper {
+	position: relative;
+	width: 100%;
+}
+
+.input-text {
+	width: 100%;
+	padding-right: 35px;
+}
+
+.eye-button {
+	position: absolute;
+	right: 0;
+	top: 50%;
+	transform: translateY(-50%);
+	width: 32px;
+	height: 32px;
+	cursor: pointer;
 }
 </style>
