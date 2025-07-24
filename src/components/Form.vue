@@ -1,22 +1,22 @@
 <script setup lang="ts">
-import { computed } from 'vue'
-import { usePasswordForm } from '@/composables/usePasswordForm'
-import type { PasswordEntry } from '@/types/password'
-import { useToast, InputText, Button } from '../components/primevue'
+import { computed } from 'vue';
+import { usePasswordForm } from '@/composables/usePasswordForm';
+import type { PasswordEntry } from '@/types/password';
+import { useToast, InputText, Button } from '../components/primevue';
 
-const toast = useToast()
+const toast = useToast();
 const props = defineProps<{
-	editingData?: PasswordEntry | null
-}>()
+	editingData?: PasswordEntry | null;
+}>();
 
-const emit = defineEmits(['submit', 'cancel'])
+const emit = defineEmits(['submit', 'cancel']);
 
 const { formData, hasChanges, submitPasswordForm, cancelPasswordForm } =
-	usePasswordForm(props.editingData)
+	usePasswordForm(props.editingData);
 
 const isEditing = computed(
 	() => props.editingData !== null && props.editingData !== undefined
-)
+);
 </script>
 
 <template>

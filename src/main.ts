@@ -1,14 +1,14 @@
-import './assets/main.css'
+import './assets/main.css';
 
-import { createApp } from 'vue'
-import PrimeVue from 'primevue/config'
-import ToastService from 'primevue/toastservice'
-import Aura from '@primeuix/themes/aura'
-import 'primeicons/primeicons.css'
-import { createPinia } from 'pinia'
-import App from './App.vue'
+import { createApp } from 'vue';
+import PrimeVue from 'primevue/config';
+import ToastService from 'primevue/toastservice';
+import Aura from '@primeuix/themes/aura';
+import 'primeicons/primeicons.css';
+import { createPinia } from 'pinia';
+import App from './App.vue';
 
-const app = createApp(App)
+const app = createApp(App);
 
 app
 	.use(createPinia())
@@ -17,9 +17,9 @@ app
 		theme: {
 			preset: Aura,
 			options: {
-				// darkModeSelector: 'system',
+				darkModeSelector: 'system',
 			},
 		},
-	})
+	});
 
-app.mount('#app')
+app.mount('#app');
