@@ -15,7 +15,7 @@ const cancel = () => {
 </script>
 
 <template>
-	<div v-if="props.modelValue" class="modal-overlay" @click.self="cancel">
+	<div v-show="props.modelValue" class="modal-overlay" @click.self="cancel">
 		<Form
 			:editingData="props.editingData"
 			@submit="data => emit('submit', data)"
