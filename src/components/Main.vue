@@ -1,20 +1,17 @@
 <script setup lang="ts">
 import {
 	DataTable,
-	IconField,
 	Chip,
-	InputIcon,
 	InputText,
 	Button,
 	Column,
 } from '../components/primevue'
-import { ref } from 'vue'
+import SearchBar from './SearchBar.vue'
 import { usePasswordManager } from '@/composables/usePasswordManager'
 import { usePasswordStore } from '@/stores/usePassword'
 import DeleteConfirmationDialog from './DeleteConfirmationDialog.vue'
 import PasswordFormModal from './PasswordFormModal.vue'
 
-const searchQuery = ref('')
 const passwordStore = usePasswordStore()
 const {
 	editingData,
@@ -27,6 +24,9 @@ const {
 	togglePasswordVisibility,
 	confirmDelete,
 	isDeleteDialogVisible,
+	filteredPasswords,
+	searchQuery,
+	debouncedUpdateSearch,
 } = usePasswordManager()
 
 const addPassword = () => {
@@ -59,16 +59,15 @@ const addPassword = () => {
 			@cancel="cancelEdit"
 		/>
 
-		<div v-if="passwordStore.passwords.length > 0" class="search">
-			<IconField>
-				<InputIcon class="pi pi-search" />
-				<InputText v-model="searchQuery" placeholder="Search..." size="small" />
-			</IconField>
-		</div>
+		<SearchBar
+			v-if="passwordStore.passwords.length > 0"
+			:modelValue="searchQuery"
+			@update:modelValue="debouncedUpdateSearch"
+		/>
 	</div>
 
 	<div v-if="passwordStore.passwords.length > 0" class="table-container">
-		<DataTable :value="passwordStore.passwords">
+		<DataTable :value="filteredPasswords">
 			<Column field="name" header="Name">
 				<template #body="{ data }">
 					{{ data.name }}

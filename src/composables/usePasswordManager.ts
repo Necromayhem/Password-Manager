@@ -1,20 +1,32 @@
-import { ref } from 'vue'
+import { ref, computed } from 'vue'
 import { usePasswordStore } from '@/stores/usePassword'
 import { usePasswordActions } from './usePasswordActions'
+import { useSearch } from './useSearch'
 import type { PasswordEntry } from '@/types/password'
 
 export function usePasswordManager() {
 	const passwordStore = usePasswordStore()
 	const { addPassword, deletePassword, updatePassword } = usePasswordActions()
+	const {
+		searchQuery,
+		filteredPasswords: searchFilteredPasswords,
+		debouncedUpdateSearch,
+	} = useSearch()
+
 	const editingData = ref<PasswordEntry | null>(null)
 	const showForm = ref(false)
-
 	const isDeleteDialogVisible = ref(false)
 	const deleteIndex = ref<number>(-1)
+	const showPasswords = ref<Record<number, boolean>>({})
+
+	// Комбинируем filteredPasswords с возможными другими фильтрами
+	const filteredPasswords = computed(() => {
+		return searchFilteredPasswords.value
+	})
 
 	const editPassword = (index: number) => {
 		if (index >= 0 && index < passwordStore.passwords.length) {
-			editingData.value = passwordStore.passwords[index]
+			editingData.value = { ...passwordStore.passwords[index] }
 			showForm.value = true
 		}
 	}
@@ -40,7 +52,9 @@ export function usePasswordManager() {
 	const submitPassword = (passwordData: PasswordEntry) => {
 		if (editingData.value) {
 			const index = passwordStore.passwords.findIndex(
-				p => p === editingData.value
+				p =>
+					p.name === editingData.value?.name &&
+					p.mail === editingData.value?.mail
 			)
 			if (index !== -1) updatePassword(index, passwordData)
 		} else {
@@ -53,8 +67,6 @@ export function usePasswordManager() {
 		showForm.value = false
 		editingData.value = null
 	}
-
-	const showPasswords = ref<Record<number, boolean>>({})
 
 	const togglePasswordVisibility = (index: number) => {
 		showPasswords.value[index] = !showPasswords.value[index]
@@ -72,5 +84,8 @@ export function usePasswordManager() {
 		confirmDelete,
 		deleteIndex,
 		isDeleteDialogVisible,
+		filteredPasswords,
+		searchQuery,
+		debouncedUpdateSearch,
 	}
 }
