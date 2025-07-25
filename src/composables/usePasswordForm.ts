@@ -1,7 +1,6 @@
-import { ref, watch, computed, onMounted } from 'vue'
+import { ref, watchEffect, computed, onMounted } from 'vue'
 import type { PasswordEntry, PasswordFormEmits } from '@/types/password'
 import { useFormSession } from '@/services/form-session.service'
-import { debounce } from '@/utils/debounce'
 
 export function usePasswordForm(initialData?: PasswordEntry | null) {
 	const {
@@ -32,56 +31,39 @@ export function usePasswordForm(initialData?: PasswordEntry | null) {
 		}
 	})
 
-	watch(
-		() => initialData,
-		newValue => {
-			if (newValue) {
-				originalData.value = newValue
-				formData.value = {
-					name: newValue.name,
-					mail: newValue.mail,
-					password: newValue.password,
-					tags: newValue.tags?.map(tag => tag.text).join('; ') || '',
-				}
-			} else {
-				originalData.value = null
+	watchEffect(() => {
+		if (initialData) {
+			originalData.value = initialData
+			formData.value = {
+				name: initialData.name,
+				mail: initialData.mail,
+				password: initialData.password,
+				tags: initialData.tags?.map(tag => tag.text).join('; ') || '',
 			}
-		},
-		{ immediate: true }
-	)
-
-	const debouncedSave = debounce((data: Partial<PasswordEntry>) => {
-		saveFormSession(data)
-	}, 200)
-
-	watch(
-		() => ({
-			name: formData.value.name,
-			mail: formData.value.mail,
-			password: formData.value.password,
-			tags: formData.value.tags,
-		}),
-		newValue => {
-			if (
-				newValue.name ||
-				newValue.mail ||
-				newValue.password ||
-				newValue.tags
-			) {
-				debouncedSave({
-					name: newValue.name,
-					mail: newValue.mail,
-					password: newValue.password,
-					tags: newValue.tags
-						.split(';')
-						.map(tag => tag.trim())
-						.filter(tag => tag.length > 0)
-						.map(text => ({ text })),
-				})
-			}
+		} else {
+			originalData.value = null
 		}
-		// { deep: true }
-	)
+	})
+
+	watchEffect(() => {
+		if (
+			formData.value.name ||
+			formData.value.mail ||
+			formData.value.password ||
+			formData.value.tags
+		) {
+			saveFormSession({
+				name: formData.value.name,
+				mail: formData.value.mail,
+				password: formData.value.password,
+				tags: formData.value.tags
+					.split(';')
+					.map(tag => tag.trim())
+					.filter(tag => tag.length > 0)
+					.map(text => ({ text })),
+			})
+		}
+	})
 
 	const hasChanges = computed(() => {
 		if (!originalData.value) return false
