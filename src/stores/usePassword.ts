@@ -1,4 +1,3 @@
-// stores/usePassword.ts
 import { ref } from 'vue'
 import { defineStore } from 'pinia'
 import type { PasswordEntry } from '@/types/password'
