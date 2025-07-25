@@ -8,6 +8,7 @@ import InputIcon from 'primevue/inputicon'
 import { useToast } from 'primevue/usetoast'
 import Password from 'primevue/password'
 import Dialog from 'primevue/dialog'
+import Select from 'primevue/select'
 
 export {
 	Button,
@@ -20,4 +21,5 @@ export {
 	useToast,
 	Password,
 	Dialog,
+	Select,
 }

@@ -13,15 +13,30 @@ export function usePasswordManager() {
 		debouncedUpdateSearch,
 	} = useSearch()
 
+	const selectedTag = ref<string>('All')
+	const allTags = computed(() => {
+		const tags = new Set<string>()
+		passwordStore.passwords.forEach(password => {
+			password.tags?.forEach(tag => tags.add(tag.text))
+		})
+		return ['All', ...Array.from(tags).sort()]
+	})
+
+	const filterByTag = (passwords: PasswordEntry[]) => {
+		if (!selectedTag.value || selectedTag.value === 'All') return passwords
+		return passwords.filter(password =>
+			password.tags?.some(tag => tag.text === selectedTag.value)
+		)
+	}
+
 	const editingData = ref<PasswordEntry | null>(null)
 	const showForm = ref(false)
 	const isDeleteDialogVisible = ref(false)
 	const deleteIndex = ref<number>(-1)
 	const showPasswords = ref<Record<number, boolean>>({})
 
-	// Комбинируем filteredPasswords с возможными другими фильтрами
 	const filteredPasswords = computed(() => {
-		return searchFilteredPasswords.value
+		return filterByTag(searchFilteredPasswords.value)
 	})
 
 	const editPassword = (index: number) => {
@@ -87,5 +102,7 @@ export function usePasswordManager() {
 		filteredPasswords,
 		searchQuery,
 		debouncedUpdateSearch,
+		selectedTag,
+		allTags,
 	}
 }

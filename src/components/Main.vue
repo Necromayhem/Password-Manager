@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import { computed } from 'vue'
 import {
 	DataTable,
 	Chip,
@@ -7,6 +8,7 @@ import {
 	Column,
 } from '../components/primevue'
 import SearchBar from './SearchBar.vue'
+import TagFilter from './TagFilter.vue'
 import { usePasswordManager } from '@/composables/usePasswordManager'
 import { usePasswordStore } from '@/stores/usePassword'
 import DeleteConfirmationDialog from './DeleteConfirmationDialog.vue'
@@ -27,6 +29,8 @@ const {
 	filteredPasswords,
 	searchQuery,
 	debouncedUpdateSearch,
+	selectedTag,
+	allTags,
 } = usePasswordManager()
 
 const addPassword = () => {
@@ -59,11 +63,13 @@ const addPassword = () => {
 			@cancel="cancelEdit"
 		/>
 
-		<SearchBar
-			v-if="passwordStore.passwords.length > 0"
-			:modelValue="searchQuery"
-			@update:modelValue="debouncedUpdateSearch"
-		/>
+		<div v-if="passwordStore.passwords.length > 0" class="search-container">
+			<SearchBar
+				:modelValue="searchQuery"
+				@update:modelValue="debouncedUpdateSearch"
+			/>
+			<TagFilter v-model="selectedTag" :options="allTags" />
+		</div>
 	</div>
 
 	<div v-if="passwordStore.passwords.length > 0" class="table-container">
@@ -282,5 +288,11 @@ const addPassword = () => {
 .password-cell button {
 	padding: 0.25rem;
 	margin-left: 0.5rem;
+}
+.search-container {
+	display: flex;
+	width: 100%;
+	margin-bottom: 1rem;
+	align-items: center;
 }
 </style>
