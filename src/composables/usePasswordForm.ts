@@ -31,6 +31,7 @@ export function usePasswordForm(initialData?: PasswordEntry | null) {
 			}
 		}
 	})
+
 	watch(
 		() => initialData,
 		newValue => {
@@ -51,7 +52,7 @@ export function usePasswordForm(initialData?: PasswordEntry | null) {
 
 	const debouncedSave = debounce((data: Partial<PasswordEntry>) => {
 		saveFormSession(data)
-	}, 100)
+	}, 200)
 
 	watch(
 		() => ({
@@ -78,8 +79,8 @@ export function usePasswordForm(initialData?: PasswordEntry | null) {
 						.map(text => ({ text })),
 				})
 			}
-		},
-		{ deep: true }
+		}
+		// { deep: true }
 	)
 
 	const hasChanges = computed(() => {
