@@ -1,5 +1,4 @@
 <script setup lang="ts">
-import { computed } from 'vue'
 import {
 	DataTable,
 	Chip,
@@ -31,6 +30,7 @@ const {
 	debouncedUpdateSearch,
 	selectedTag,
 	allTags,
+	copyPassword,
 } = usePasswordManager()
 
 const addPassword = () => {
@@ -97,26 +97,34 @@ const addPassword = () => {
 					</div>
 				</template>
 			</Column>
-			<Column field="actions" header="Actions">
-				<template #body="{ index }">
+			<Column field="actions">
+				<template #body="{ data, index }">
 					<div class="actions">
 						<Button
 							v-tooltip="
-								showPasswords[index] ? 'Hide password' : 'Show password'
+								showPasswords[index] ? 'Скрыть пароль' : 'Показать пароль'
 							"
 							icon="pi pi-eye"
 							class="p-button-rounded p-button-text"
 							@click="togglePasswordVisibility(index)"
 						/>
 						<Button
+							v-tooltip="'Копировать пароль'"
+							icon="pi pi-copy"
+							class="p-button-rounded p-button-text"
+							@click="copyPassword(data.password)"
+						/>
+						<Button
 							icon="pi pi-pencil"
 							class="p-button-rounded p-button-text"
 							@click="editPassword(index)"
+							v-tooltip="'Редактировать'"
 						/>
 						<Button
 							icon="pi pi-trash"
 							class="p-button-rounded p-button-text p-button-danger"
 							@click="removePassword(index)"
+							v-tooltip="'Удалить'"
 						/>
 					</div>
 				</template>

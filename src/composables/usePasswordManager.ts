@@ -6,7 +6,8 @@ import type { PasswordEntry } from '@/types/password'
 
 export function usePasswordManager() {
 	const passwordStore = usePasswordStore()
-	const { addPassword, deletePassword, updatePassword } = usePasswordActions()
+	const { addPassword, deletePassword, updatePassword, copyPassword } =
+		usePasswordActions()
 	const {
 		searchQuery,
 		filteredPasswords: searchFilteredPasswords,
@@ -111,5 +112,6 @@ export function usePasswordManager() {
 		debouncedUpdateSearch,
 		selectedTag,
 		allTags,
+		copyPassword,
 	}
 }
