@@ -24,5 +24,6 @@ const emit = defineEmits(['update:modelValue'])
 .tag-filter {
 	min-width: 200px;
 	margin-left: 1rem;
+	margin-top: 0 !important;
 }
 </style>

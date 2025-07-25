@@ -73,7 +73,13 @@ const addPassword = () => {
 	</div>
 
 	<div v-if="passwordStore.passwords.length > 0" class="table-container">
-		<DataTable :value="filteredPasswords">
+		<DataTable
+			:value="filteredPasswords"
+			paginator
+			:rows="5"
+			:rowsPerPageOptions="[5, 10, 20, 50]"
+			paginatorTemplate="FirstPageLink PrevPageLink PageLinks NextPageLink LastPageLink RowsPerPageDropdown"
+		>
 			<Column field="name" header="Name">
 				<template #body="{ data }">
 					{{ data.name }}
