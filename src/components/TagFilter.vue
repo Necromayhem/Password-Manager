@@ -16,6 +16,7 @@ const emit = defineEmits(['update:modelValue'])
 		:options="options"
 		placeholder="Filter by tag"
 		class="tag-filter"
+		optionLabel=""
 	/>
 </template>
 

@@ -17,15 +17,22 @@ export function usePasswordManager() {
 	const allTags = computed(() => {
 		const tags = new Set<string>()
 		passwordStore.passwords.forEach(password => {
-			password.tags?.forEach(tag => tags.add(tag.text))
+			password.tags?.forEach(tag => {
+				const splitTags = tag.text.split(/[ ,;]+/).filter(t => t.trim() !== '')
+				splitTags.forEach(t => tags.add(t.trim()))
+			})
 		})
 		return ['All', ...Array.from(tags).sort()]
 	})
 
 	const filterByTag = (passwords: PasswordEntry[]) => {
 		if (!selectedTag.value || selectedTag.value === 'All') return passwords
+
 		return passwords.filter(password =>
-			password.tags?.some(tag => tag.text === selectedTag.value)
+			password.tags?.some(tag => {
+				const tagWords = tag.text.split(/[ ,;]+/).map(t => t.trim())
+				return tagWords.includes(selectedTag.value)
+			})
 		)
 	}
 
